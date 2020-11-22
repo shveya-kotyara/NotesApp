@@ -9,11 +9,23 @@
           <!-- new note -->
           <newNote :note="note" @addNote="addNote" />
 
-          <!-- title -->
-          <div class="note-header">
+          <div class="note-header" style="margin: 30px 0">
+            <!-- title -->
             <h1>{{ title }}</h1>
+
+            <!-- search -->
+            <search
+              :value="search"
+              placeholder="Find your note"
+              @search="search = $event"
+            />
+
+            <!-- icons contols-->
             <div class="icons">
-              <svg :class="{active: grid}" @click="grid = true" style="cursor: pointer"
+              <svg
+                :class="{ active: grid }"
+                @click="grid = true"
+                style="cursor: pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -29,7 +41,10 @@
                 <rect x="14" y="14" width="7" height="7"></rect>
                 <rect x="3" y="14" width="7" height="7"></rect>
               </svg>
-              <svg :class="{active: !grid}" @click="grid = false" style="cursor: pointer"
+              <svg
+                :class="{ active: !grid }"
+                @click="grid = false"
+                style="cursor: pointer"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
                 height="24"
@@ -51,7 +66,11 @@
           </div>
 
           <!-- note list -->
-          <notes :notes="notes" :grid="grid" @remove="removeNote" />
+          <notes
+            :notes="notesFilter"
+            :grid="grid"
+            @remove="removeNote"
+          />
         </div>
       </section>
     </div>
@@ -62,20 +81,24 @@
 import message from "@/components/Message.vue";
 import newNote from "@/components/NewNote.vue";
 import notes from "@/components/Notes.vue";
+import search from "@/components/Search.vue";
 export default {
   components: {
     message,
     newNote,
     notes,
+    search,
   },
   data() {
     return {
       title: "Notes App",
+      search: "",
       message: "",
       grid: true,
       note: {
         title: "",
         descr: "",
+        impor: false,
       },
       notes: [
         {
@@ -96,10 +119,27 @@ export default {
       ],
     };
   },
+  computed: {
+    notesFilter() {
+      let array = this.notes,
+        search = this.search;
+      if (!search) return array;
+      // Small
+      search = search.trim().toLowerCase();
+      // Filter
+      array = array.filter(function (item) {
+        if (item.title.toLowerCase().indexOf(search) !== -1) {
+          return item;
+        }
+      });
+      // Error
+      return array;
+    },
+  },
   methods: {
     addNote() {
       // console.log(this.note)
-      let { title, descr } = this.note;
+      let { title, descr, impor } = this.note;
 
       if (title === "") {
         this.message = "Title cant be empty";
@@ -109,12 +149,13 @@ export default {
       this.notes.push({
         title,
         descr,
+        impor,
         date: new Date(Date.now()).toLocaleString(),
       });
 
       this.note.title = "";
       this.note.descr = "";
-
+      this.note.impor = false
       this.message = null;
     },
     removeNote(index) {

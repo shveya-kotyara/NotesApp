@@ -1,8 +1,13 @@
 <template>
   <!-- note list -->
   <div class="notes">
-    <div class="note" :class="{full: !grid}" v-for="(note, index) in notes" :key="index">
-      <div class="note-header" :class="{full: !grid}">
+    <div
+      class="note"
+      :class="{ full: !grid, danger: note.impor}" 
+      v-for="(note, index) in notes"
+      :key="index"
+    >
+      <div class="note-header" :class="{ full: !grid }">
         <p>{{ note.title }}</p>
         <p style="cursor: pointer" @click="removeNote(index)">x</p>
       </div>
@@ -48,17 +53,23 @@ export default {
   padding: 18px 20px;
   margin-bottom: 20px;
   background-color: #ffffff;
-  transition: all .25s cubic-bezier(.02,.01,.47,1);
-  box-shadow: 0 30px 30px rgba(0,0,0,.02);
+  transition: all 0.25s cubic-bezier(0.02, 0.01, 0.47, 1);
+  box-shadow: 0 30px 30px rgba(0, 0, 0, 0.02);
   &:hover {
-      box-shadow: 0 30px 30px rgba(0,0,0,.04);
-      transform: translate(0,-6px);
-      transition-delay: 0s !important;
+    box-shadow: 0 30px 30px rgba(0, 0, 0, 0.04);
+    transform: translate(0, -6px);
+    transition-delay: 0s !important;
   }
   &.full {
-      width: 100%;
-      text-align: center;
+    width: 100%;
+    text-align: center;
   }
+  &.danger {
+      border: 1px solid rgb(248, 64, 64);
+    }
+  &.medium {
+      border: 1px solid rgb(255, 224, 120);
+    }
 }
 .note-header {
   display: flex;
@@ -82,13 +93,13 @@ export default {
     color: #999999;
   }
   &.full {
-      justify-content: center;
-      p {
-          margin-right: 16px;
-          &:last-child {
-              margin-right: 0;
-          }
+    justify-content: center;
+    p {
+      margin-right: 16px;
+      &:last-child {
+        margin-right: 0;
       }
+    }
   }
 }
 .note-body {
