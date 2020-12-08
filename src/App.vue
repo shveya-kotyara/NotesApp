@@ -70,6 +70,9 @@
             :notes="notesFilter"
             :grid="grid"
             @remove="removeNote"
+            :messageTitle="messageTitle"
+            @change="changeTitle"
+            @clicktl="clickTitle"
           />
         </div>
       </section>
@@ -94,27 +97,33 @@ export default {
       title: "Notes App",
       search: "",
       message: "",
+      messageTitle: "",
       grid: true,
       note: {
         title: "",
         descr: "",
         impor: false,
+        showChange: false,
       },
+      localcopy: [],
       notes: [
         {
           title: "First Note",
           descr: "Description for first note",
           date: new Date(Date.now()).toLocaleString(),
+          showChange: false,
         },
         {
           title: "Second Note",
           descr: "Description for second note",
           date: new Date(Date.now()).toLocaleString(),
+          showChange: false,
         },
         {
           title: "Third Note",
           descr: "Description for third note",
           date: new Date(Date.now()).toLocaleString(),
+          showChange: false,
         },
       ],
     };
@@ -139,7 +148,7 @@ export default {
   methods: {
     addNote() {
       // console.log(this.note)
-      let { title, descr, impor } = this.note;
+      let { title, descr, impor, showChange } = this.note;
 
       if (title === "") {
         this.message = "Title cant be empty";
@@ -150,16 +159,30 @@ export default {
         title,
         descr,
         impor,
+        showChange,
         date: new Date(Date.now()).toLocaleString(),
       });
 
       this.note.title = "";
       this.note.descr = "";
-      this.note.impor = false
+      this.note.impor = false;
       this.message = null;
     },
     removeNote(index) {
       this.notes.splice(index, 1);
+    },
+    changeTitle(index) {
+      if (this.notes[index].title === "") {
+        this.messageTitle = "Title cant be empty";
+        return false;
+      } else {
+        this.notes[index].showChange = !this.notes[index].showChange;
+        this.notes[index].date = new Date(Date.now()).toLocaleString();
+        this.messageTitle = "";
+      }
+    },
+    clickTitle(index) {
+      this.notes[index].showChange = true;
     },
   },
 };

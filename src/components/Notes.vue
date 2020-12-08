@@ -8,8 +8,17 @@
       :key="index"
     >
       <div class="note-header" :class="{ full: !grid }">
-        <p>{{ note.title }}</p>
+        <p @click="clickTitle(index)">{{ note.title }}</p>
         <p style="cursor: pointer" @click="removeNote(index)">x</p>
+      </div>
+      <div v-if="note.showChange">
+      <label>Change title => Please push Enter</label>
+      <p> {{ messageTitle }} </p>
+      <input 
+      class="change-title"
+      v-on:keyup.enter="changeTitle(index)"
+      v-model="note.title"
+      >
       </div>
       <div class="note-body">
         <p>{{ note.descr }}</p>
@@ -30,11 +39,20 @@ export default {
       type: Boolean,
       required: true,
     },
+    messageTitle: {
+      type: String,
+      required: true,
+    }
   },
   methods: {
     removeNote(index) {
-      console.log(`Note ${index} - removed`);
       this.$emit("remove", index);
+    },
+    changeTitle(index) {
+      this.$emit("change", index);
+    },
+    clickTitle(index) {
+      this.$emit("clicktl", index);
     },
   },
 };
@@ -47,6 +65,10 @@ export default {
   justify-content: space-between;
   flex-wrap: wrap;
   padding: 40px 0;
+  input {
+    margin: 0;
+    border-color: #e2b522;
+  }
 }
 .note {
   width: 48%;
